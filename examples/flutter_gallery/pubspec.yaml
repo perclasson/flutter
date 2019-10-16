@@ -18,6 +18,7 @@ dependencies:
   scoped_model: 1.0.1
   shrine_images: 1.1.2
   rally_assets: 1.0.0
+  breakpoint: 1.0.1
 
   # Also update dev/benchmarks/complex_layout/pubspec.yaml
   flutter_gallery_assets: 0.1.9+2
@@ -275,14 +276,6 @@ flutter:
       - asset: packages/rally_assets/RobotoCondensed-Regular.ttf
         weight: 500
       - asset: packages/rally_assets/RobotoCondensed-Bold.ttf
-        weight: 700
-    - family: Eczar
-      fonts:
-      - asset: packages/rally_assets/Eczar-Regular.ttf
-        weight: 400
-      - asset: packages/rally_assets/Eczar-SemiBold.ttf
-        weight: 600
-      - asset: packages/rally_assets/Eczar-Bold.ttf
         weight: 700
 
 # PUBSPEC CHECKSUM: 013b

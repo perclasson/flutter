@@ -20,7 +20,11 @@ import 'package:flutter_gallery/demo/rally/tabs/budgets.dart';
 import 'package:flutter_gallery/demo/rally/tabs/overview.dart';
 import 'package:flutter_gallery/demo/rally/tabs/settings.dart';
 
+import 'responsive.dart';
+
 const int tabCount = 5;
+const int turnsToRotateRight = 1;
+const int turnsToRotateLeft = 3;
 
 class HomePage extends StatefulWidget {
   @override
@@ -51,37 +55,74 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
+    final TabBar tabBar = TabBar(
+      // Setting isScrollable to true prevents the tabs from being
+      // wrapped in [Expanded] widgets, which allows for more
+      // flexible sizes and size animations among tabs.
+      isScrollable: true,
+      labelPadding: EdgeInsets.zero,
+      tabs: _buildTabs(theme),
+      controller: _tabController,
+      // This hides the tab indicator.
+      indicatorColor: Colors.transparent,
+    );
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Theme(
-              // This theme effectively removes the default visual touch
-              // feedback for tapping a tab, which is replaced with a custom
-              // animation.
-              data: theme.copyWith(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-              ),
-              child: TabBar(
-                // Setting isScrollable to true prevents the tabs from being
-                // wrapped in [Expanded] widgets, which allows for more
-                // flexible sizes and size animations among tabs.
-                isScrollable: true,
-                labelPadding: EdgeInsets.zero,
-                tabs: _buildTabs(theme),
-                controller: _tabController,
-                // This hides the tab indicator.
-                indicatorColor: Colors.transparent,
-              ),
+        child: Theme(
+          // This theme effectively removes the default visual touch
+          // feedback for tapping a tab, which is replaced with a custom
+          // animation.
+          data: theme.copyWith(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
+          child: Responsive(
+            mobile: Column(
+              children: <Widget>[
+                tabBar,
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: _buildTabViews(),
+                  ),
+                ),
+              ],
             ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: _buildTabViews(),
-              ),
+            desktop: Row(
+              children: <Widget>[
+                Container(
+                  width: 150,
+                  alignment: Alignment.topCenter,
+                  child: Column(
+                    children: <Widget>[
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        height: 80,
+                        child: Image.asset(
+                          'logo.png',
+                          package: 'rally_assets',
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      RotatedBox(
+                        quarterTurns: turnsToRotateRight,
+                        child: tabBar,
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: RotatedBox(
+                    quarterTurns: turnsToRotateRight,
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: _buildDesktopTabViews(),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -107,6 +148,17 @@ class _HomePageState extends State<HomePage>
     ];
   }
 
+  List<Widget> _buildDesktopTabViews() {
+    // We rotate the content so that we can swipe vertically.
+    return <Widget>[
+      RotatedBox(quarterTurns: turnsToRotateLeft, child: OverviewView()),
+      RotatedBox(quarterTurns: turnsToRotateLeft, child: AccountsView()),
+      RotatedBox(quarterTurns: turnsToRotateLeft, child: BillsView()),
+      RotatedBox(quarterTurns: turnsToRotateLeft, child: BudgetsView()),
+      RotatedBox(quarterTurns: turnsToRotateLeft, child: SettingsView()),
+    ];
+  }
+
   Widget _buildTab(
     ThemeData theme,
     IconData iconData,
@@ -120,6 +172,7 @@ class _HomePageState extends State<HomePage>
       _tabController.index == index,
     );
   }
+
 }
 
 class _RallyTab extends StatefulWidget {
@@ -168,6 +221,32 @@ class _RallyTabState extends State<_RallyTab>
 
   @override
   Widget build(BuildContext context) {
+    // For desktops we have a vertical tab.
+    if (Window.isDesktop(context)) {
+      return RotatedBox(
+        quarterTurns: turnsToRotateLeft,
+        child: Column(
+          children: <Widget>[
+            const SizedBox(height: 36),
+            FadeTransition(
+              child: widget.icon,
+              opacity: _iconFadeAnimation,
+            ),
+            const SizedBox(height: 12),
+            FadeTransition(
+              child: SizeTransition(
+                child: Center(child: widget.titleText),
+                axis: Axis.vertical,
+                axisAlignment: -1,
+                sizeFactor: _titleSizeAnimation,
+              ),
+              opacity: _titleFadeAnimation,
+            ),
+          ],
+        ),
+      );
+    }
+
     // Calculate the width of each unexpanded tab by counting the number of
     // units and dividing it into the screen width. Each unexpanded tab is 1
     // unit, and there is always 1 expanded tab which is 1 unit + any extra
