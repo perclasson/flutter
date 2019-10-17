@@ -124,17 +124,15 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      Adaptive.onlyMobile(
-                        child: SizedBox(
+                      Adaptive(
+                        mobile: SizedBox(
                           height: 120,
                           child: Image.asset(
                             'thumb.png',
                             package: 'rally_assets',
                           ),
                         ),
-                      ),
-                      Adaptive.onlyDesktop(
-                        child: Align(
+                        desktop: Align(
                           alignment: Alignment.center,
                           child: Container(
                             constraints: BoxConstraints(maxWidth: loginMaxWidth),

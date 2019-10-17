@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage>
           child: Adaptive(
             mobile: Column(
               children: <Widget>[
-                _buildTabBar(_buildTabs(theme)),
+                _buildTabBar(_buildTabs(theme: theme)),
                 Expanded(
                   child: TabBarView(
                     controller: _tabController,
@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage>
                       // Rotate the tab bar, so the animation is vertical for desktops.
                       RotatedBox(
                         quarterTurns: turnsToRotateRight,
-                        child: _buildTabBar(_buildTabs(theme).map(
+                        child: _buildTabBar(_buildTabs(theme: theme, isVertical: true).map(
                           // Revert the rotation on the tabs.
                           (Widget widget) => RotatedBox(quarterTurns: turnsToRotateLeft, child: widget),
                         ).toList()),
@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage>
                   ),
                 ),
                 Expanded(
-                  // To make sure we can swipe up and down we rotate the TabBarView.
+                  // Rotate the tab views so we can swipe up and down.
                   child: RotatedBox(
                     quarterTurns: turnsToRotateRight,
                     child: TabBarView(
@@ -139,13 +139,13 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  List<Widget> _buildTabs(ThemeData theme) {
+  List<Widget> _buildTabs({ThemeData theme, bool isVertical = false}) {
     return <Widget>[
-      _buildTab(theme, Icons.pie_chart, 'OVERVIEW', 0),
-      _buildTab(theme, Icons.attach_money, 'ACCOUNTS', 1),
-      _buildTab(theme, Icons.money_off, 'BILLS', 2),
-      _buildTab(theme, Icons.table_chart, 'BUDGETS', 3),
-      _buildTab(theme, Icons.settings, 'SETTINGS', 4),
+      _buildTab(theme, Icons.pie_chart, 'OVERVIEW', 0, isVertical),
+      _buildTab(theme, Icons.attach_money, 'ACCOUNTS', 1, isVertical),
+      _buildTab(theme, Icons.money_off, 'BILLS', 2, isVertical),
+      _buildTab(theme, Icons.table_chart, 'BUDGETS', 3, isVertical),
+      _buildTab(theme, Icons.settings, 'SETTINGS', 4, isVertical),
     ];
   }
 
@@ -164,24 +164,27 @@ class _HomePageState extends State<HomePage>
     IconData iconData,
     String title,
     int index,
+    bool isVertical,
   ) {
     return _RallyTab(
-      theme.textTheme.button,
-      Icon(iconData),
-      title,
-      _tabController.index == index,
+      style: theme.textTheme.button,
+      icon: Icon(iconData),
+      title: title,
+      isExpanded: _tabController.index == index,
+      isVertical: isVertical,
     );
   }
 
 }
 
 class _RallyTab extends StatefulWidget {
-  _RallyTab(this.style, this.icon, String title, this.isExpanded) : titleText = Text(title, style: style);
+  _RallyTab({this.style, this.icon, String title, this.isExpanded, this.isVertical}) : titleText = Text(title, style: style);
 
   final TextStyle style;
   final Text titleText;
   final Icon icon;
   final bool isExpanded;
+  final bool isVertical;
 
   @override
   _RallyTabState createState() => _RallyTabState();
@@ -221,7 +224,7 @@ class _RallyTabState extends State<_RallyTab>
 
   @override
   Widget build(BuildContext context) {
-    if (Device.isDesktop(context)) {
+    if (widget.isVertical) {
       return Column(
         children: <Widget>[
           const SizedBox(height: 36),
