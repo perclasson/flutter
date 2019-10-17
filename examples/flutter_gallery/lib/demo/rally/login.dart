@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gallery/demo/rally/responsive.dart';
+import 'package:flutter_gallery/demo/rally/adaptive.dart';
 
 import 'colors.dart';
 
@@ -28,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double loginMaxWidth = Window.isDesktop(context) ? 400 : double.infinity;
+    final double loginMaxWidth = Device.isDesktop(context) ? 400 : double.infinity;
 
     return Scaffold(
       appBar: AppBar(
@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
           },
           child: Column(
             children: <Widget>[
-              Responsive.onlyDesktop(
+              Adaptive.onlyDesktop(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
@@ -81,12 +81,12 @@ class _LoginPageState extends State<LoginPage> {
               ),
               Expanded(
                 child: Align(
-                  alignment: Window.isDesktop(context) ? Alignment.center : Alignment.topCenter,
+                  alignment: Device.isDesktop(context) ? Alignment.center : Alignment.topCenter,
                   child: ListView(
                     shrinkWrap: true,
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     children: <Widget>[
-                      Responsive.onlyMobile(
+                      Adaptive.onlyMobile(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 64),
                           child: SizedBox(
@@ -124,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      Responsive.onlyMobile(
+                      Adaptive.onlyMobile(
                         child: SizedBox(
                           height: 120,
                           child: Image.asset(
@@ -133,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      Responsive.onlyDesktop(
+                      Adaptive.onlyDesktop(
                         child: Align(
                           alignment: Alignment.center,
                           child: Container(

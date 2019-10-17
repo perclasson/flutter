@@ -20,7 +20,7 @@ import 'package:flutter_gallery/demo/rally/tabs/budgets.dart';
 import 'package:flutter_gallery/demo/rally/tabs/overview.dart';
 import 'package:flutter_gallery/demo/rally/tabs/settings.dart';
 
-import 'responsive.dart';
+import 'adaptive.dart';
 
 const int tabCount = 5;
 const int turnsToRotateRight = 1;
@@ -66,6 +66,7 @@ class _HomePageState extends State<HomePage>
       // This hides the tab indicator.
       indicatorColor: Colors.transparent,
     );
+
     return Scaffold(
       body: SafeArea(
         child: Theme(
@@ -76,7 +77,7 @@ class _HomePageState extends State<HomePage>
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
           ),
-          child: Responsive(
+          child: Adaptive(
             mobile: Column(
               children: <Widget>[
                 tabBar,
@@ -112,6 +113,7 @@ class _HomePageState extends State<HomePage>
                   ),
                 ),
                 Expanded(
+                  // To make sure we can swipe up and down we rotate the TabBarView.
                   child: RotatedBox(
                     quarterTurns: turnsToRotateRight,
                     child: TabBarView(
@@ -149,7 +151,7 @@ class _HomePageState extends State<HomePage>
   }
 
   List<Widget> _buildDesktopTabViews() {
-    // We rotate the content so that we can swipe vertically.
+    // We revert the rotation for tab views.
     return <Widget>[
       RotatedBox(quarterTurns: turnsToRotateLeft, child: OverviewView()),
       RotatedBox(quarterTurns: turnsToRotateLeft, child: AccountsView()),
@@ -222,7 +224,7 @@ class _RallyTabState extends State<_RallyTab>
   @override
   Widget build(BuildContext context) {
     // For desktops we have a vertical tab.
-    if (Window.isDesktop(context)) {
+    if (Device.isDesktop(context)) {
       return RotatedBox(
         quarterTurns: turnsToRotateLeft,
         child: Column(
