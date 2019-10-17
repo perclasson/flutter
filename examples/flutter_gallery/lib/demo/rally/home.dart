@@ -55,18 +55,6 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
-    final TabBar tabBar = TabBar(
-      // Setting isScrollable to true prevents the tabs from being
-      // wrapped in [Expanded] widgets, which allows for more
-      // flexible sizes and size animations among tabs.
-      isScrollable: true,
-      labelPadding: EdgeInsets.zero,
-      tabs: _buildTabs(theme),
-      controller: _tabController,
-      // This hides the tab indicator.
-      indicatorColor: Colors.transparent,
-    );
-
     return Scaffold(
       body: SafeArea(
         child: Theme(
@@ -80,7 +68,7 @@ class _HomePageState extends State<HomePage>
           child: Adaptive(
             mobile: Column(
               children: <Widget>[
-                tabBar,
+                _buildTabBar(_buildTabs(theme)),
                 Expanded(
                   child: TabBarView(
                     controller: _tabController,
@@ -105,9 +93,13 @@ class _HomePageState extends State<HomePage>
                         ),
                       ),
                       const SizedBox(height: 24),
+                      // Rotate the tab bar, so the animation is vertical for desktops.
                       RotatedBox(
                         quarterTurns: turnsToRotateRight,
-                        child: tabBar,
+                        child: _buildTabBar(_buildTabs(theme).map(
+                          // Revert the rotation on the tabs.
+                          (Widget widget) => RotatedBox(quarterTurns: turnsToRotateLeft, child: widget),
+                        ).toList()),
                       ),
                     ],
                   ),
@@ -118,7 +110,10 @@ class _HomePageState extends State<HomePage>
                     quarterTurns: turnsToRotateRight,
                     child: TabBarView(
                       controller: _tabController,
-                      children: _buildDesktopTabViews(),
+                      children: _buildTabViews().map(
+                        // Revert the rotation on the tab views.
+                        (Widget widget) => RotatedBox(quarterTurns: turnsToRotateLeft, child: widget),
+                      ).toList(),
                     ),
                   ),
                 ),
@@ -127,6 +122,20 @@ class _HomePageState extends State<HomePage>
           ),
         ),
       ),
+    );
+  }
+
+  TabBar _buildTabBar(List<Widget> tabs) {
+    return TabBar(
+      // Setting isScrollable to true prevents the tabs from being
+      // wrapped in [Expanded] widgets, which allows for more
+      // flexible sizes and size animations among tabs.
+      isScrollable: true,
+      labelPadding: EdgeInsets.zero,
+      tabs: tabs,
+      controller: _tabController,
+      // This hides the tab indicator.
+      indicatorColor: Colors.transparent,
     );
   }
 
@@ -147,17 +156,6 @@ class _HomePageState extends State<HomePage>
       BillsView(),
       BudgetsView(),
       SettingsView(),
-    ];
-  }
-
-  List<Widget> _buildDesktopTabViews() {
-    // We revert the rotation for tab views.
-    return <Widget>[
-      RotatedBox(quarterTurns: turnsToRotateLeft, child: OverviewView()),
-      RotatedBox(quarterTurns: turnsToRotateLeft, child: AccountsView()),
-      RotatedBox(quarterTurns: turnsToRotateLeft, child: BillsView()),
-      RotatedBox(quarterTurns: turnsToRotateLeft, child: BudgetsView()),
-      RotatedBox(quarterTurns: turnsToRotateLeft, child: SettingsView()),
     ];
   }
 
@@ -223,29 +221,25 @@ class _RallyTabState extends State<_RallyTab>
 
   @override
   Widget build(BuildContext context) {
-    // For desktops we have a vertical tab.
     if (Device.isDesktop(context)) {
-      return RotatedBox(
-        quarterTurns: turnsToRotateLeft,
-        child: Column(
-          children: <Widget>[
-            const SizedBox(height: 36),
-            FadeTransition(
-              child: widget.icon,
-              opacity: _iconFadeAnimation,
+      return Column(
+        children: <Widget>[
+          const SizedBox(height: 36),
+          FadeTransition(
+            child: widget.icon,
+            opacity: _iconFadeAnimation,
+          ),
+          const SizedBox(height: 12),
+          FadeTransition(
+            child: SizeTransition(
+              child: Center(child: widget.titleText),
+              axis: Axis.vertical,
+              axisAlignment: -1,
+              sizeFactor: _titleSizeAnimation,
             ),
-            const SizedBox(height: 12),
-            FadeTransition(
-              child: SizeTransition(
-                child: Center(child: widget.titleText),
-                axis: Axis.vertical,
-                axisAlignment: -1,
-                sizeFactor: _titleSizeAnimation,
-              ),
-              opacity: _titleFadeAnimation,
-            ),
-          ],
-        ),
+            opacity: _titleFadeAnimation,
+          ),
+        ],
       );
     }
 
