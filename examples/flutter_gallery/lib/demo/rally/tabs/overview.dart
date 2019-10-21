@@ -77,7 +77,7 @@ class _OverviewViewState extends State<OverviewView> {
           AspectRatio(
             aspectRatio: 1 / 3,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 24),
               child: _AlertsView(),
             ),
           ),
