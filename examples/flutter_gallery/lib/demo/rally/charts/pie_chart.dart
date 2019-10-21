@@ -15,6 +15,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gallery/demo/rally/adaptive/adaptive_layout.dart';
 
 import 'package:flutter_gallery/demo/rally/colors.dart';
 import 'package:flutter_gallery/demo/rally/data.dart';
@@ -137,7 +138,8 @@ class _AnimatedRallyPieChart extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle labelTextStyle = Theme.of(context).textTheme.body1.copyWith(
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final TextStyle labelTextStyle = textTheme.body1.copyWith(
         fontSize: 14,
         letterSpacing: 0.5,
     );
@@ -149,7 +151,7 @@ class _AnimatedRallyPieChart extends AnimatedWidget {
         segments: segments,
       ),
       child: SizedBox(
-        height: 300,
+        height: Device.isDesktop(context) ? 500 : 300,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -160,7 +162,7 @@ class _AnimatedRallyPieChart extends AnimatedWidget {
               ),
               Text(
                 usdWithSignFormat.format(centerAmount),
-                style: Theme.of(context).textTheme.headline,
+                style: Device.isDesktop(context) ? textTheme.headline.copyWith(fontSize: 70) : textTheme.headline,
               ),
             ],
           ),
@@ -206,11 +208,11 @@ class _RallyPieChartOutlineBoxPainter extends BoxPainter {
       configuration.size.height,
     ) / 2;
     final Rect outerRect = Rect.fromCircle(
-      center: configuration.size.center(Offset.zero),
+      center: configuration.size.center(offset),
       radius: outerRadius - strokeWidth * 3,
     );
     final Rect innerRect = Rect.fromCircle(
-      center: configuration.size.center(Offset.zero),
+      center: configuration.size.center(offset),
       radius: outerRadius - strokeWidth * 4,
     );
 

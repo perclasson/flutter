@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gallery/demo/rally/adaptive/adaptive_layout.dart';
 
 import 'package:flutter_gallery/demo/rally/data.dart';
 import 'package:flutter_gallery/demo/rally/finance.dart';
 import 'package:flutter_gallery/demo/rally/charts/pie_chart.dart';
+
+import '../colors.dart';
 
 /// A page that shows a summary of accounts.
 class AccountsView extends StatelessWidget {
@@ -25,12 +28,31 @@ class AccountsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double balanceTotal = sumAccountDataPrimaryAmount(items);
-    return FinancialEntityView(
+    final Widget view = FinancialEntityView(
       heroLabel: 'Total',
       heroAmount: balanceTotal,
       segments: buildSegmentsFromAccountItems(items),
       wholeAmount: balanceTotal,
       financialEntityCards: buildAccountDataListViews(items),
+    );
+    return AdaptiveLayout(
+      mobile: view,
+      desktop: Row(
+        children: <Widget>[
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24.0),
+              child: view,
+            ),
+          ),
+          AspectRatio(
+            aspectRatio: 2 / 5,
+            child: Container(
+              color: RallyColors.inputBackground,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

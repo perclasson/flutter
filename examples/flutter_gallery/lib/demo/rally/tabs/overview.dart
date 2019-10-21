@@ -15,6 +15,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gallery/demo/rally/adaptive/adaptive_grid.dart';
+import 'package:flutter_gallery/demo/rally/adaptive/adaptive_layout.dart';
 
 import 'package:flutter_gallery/demo/rally/colors.dart';
 import 'package:flutter_gallery/demo/rally/data.dart';
@@ -33,34 +35,53 @@ class _OverviewViewState extends State<OverviewView> {
     final List<AccountData> accountDataList = DummyDataService.getAccountDataList();
     final List<BillData> billDataList = DummyDataService.getBillDataList();
     final List<BudgetData> budgetDataList = DummyDataService.getBudgetDataList();
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ListView(
-        children: <Widget>[
-          _AlertsView(),
-          const SizedBox(height: 16),
-          _FinancialView(
-            title: 'Accounts',
-            total: sumAccountDataPrimaryAmount(accountDataList),
-            financialItemViews: buildAccountDataListViews(accountDataList),
-          ),
-          const SizedBox(height: 16),
-          _FinancialView(
-            title: 'Bills',
-            total: sumBillDataPrimaryAmount(billDataList),
-            financialItemViews: buildBillDataListViews(billDataList),
-          ),
-          const SizedBox(height: 16),
-          _FinancialView(
-            title: 'Budgets',
-            total: sumBudgetDataPrimaryAmount(budgetDataList),
-            financialItemViews:
-                buildBudgetDataListViews(budgetDataList, context),
-          ),
-          const SizedBox(height: 16),
-        ],
+    final List<Widget> views = <Widget>[
+      if (Device.isMobile(context))
+        _AlertsView(),
+      _FinancialView(
+        title: 'Accounts',
+        total: sumAccountDataPrimaryAmount(accountDataList),
+        financialItemViews: buildAccountDataListViews(accountDataList),
       ),
+      _FinancialView(
+        title: 'Bills',
+        total: sumBillDataPrimaryAmount(billDataList),
+        financialItemViews: buildBillDataListViews(billDataList),
+      ),
+      _FinancialView(
+      title: 'Budgets',
+      total: sumBudgetDataPrimaryAmount(budgetDataList),
+      financialItemViews: buildBudgetDataListViews(budgetDataList, context),
+      ),
+    ];
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: AdaptiveLayout(
+              mobile: ListView(children: views),
+              desktop: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                children: views,
+              ),
+            ),
+          ),
+        ),
+        if (Device.isDesktop(context))
+          AspectRatio(
+            aspectRatio: 1 / 3,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: _AlertsView(),
+            ),
+          ),
+      ],
     );
   }
 }

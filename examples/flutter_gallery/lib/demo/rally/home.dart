@@ -20,7 +20,7 @@ import 'package:flutter_gallery/demo/rally/tabs/budgets.dart';
 import 'package:flutter_gallery/demo/rally/tabs/overview.dart';
 import 'package:flutter_gallery/demo/rally/tabs/settings.dart';
 
-import 'adaptive.dart';
+import 'adaptive/adaptive_layout.dart';
 
 const int tabCount = 5;
 const int turnsToRotateRight = 1;
@@ -57,6 +57,8 @@ class _HomePageState extends State<HomePage>
 
     return Scaffold(
       body: SafeArea(
+        top: Device.isMobile(context),
+        bottom: Device.isMobile(context),
         child: Theme(
           // This theme effectively removes the default visual touch
           // feedback for tapping a tab, which is replaced with a custom
@@ -65,7 +67,7 @@ class _HomePageState extends State<HomePage>
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
           ),
-          child: Adaptive(
+          child: AdaptiveLayout(
             mobile: Column(
               children: <Widget>[
                 _buildTabBar(_buildTabs(theme: theme)),
@@ -82,6 +84,7 @@ class _HomePageState extends State<HomePage>
                 Container(
                   width: 150,
                   alignment: Alignment.topCenter,
+                  padding: const EdgeInsets.symmetric(vertical: 32),
                   child: Column(
                     children: <Widget>[
                       const SizedBox(height: 24),

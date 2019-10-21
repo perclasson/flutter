@@ -18,7 +18,6 @@ dependencies:
   scoped_model: 1.0.1
   shrine_images: 1.1.2
   rally_assets: 1.0.0
-  breakpoint: 1.0.1
 
   # Also update dev/benchmarks/complex_layout/pubspec.yaml
   flutter_gallery_assets: 0.1.9+2

@@ -21,6 +21,8 @@ import 'package:flutter_gallery/demo/rally/colors.dart';
 import 'package:flutter_gallery/demo/rally/data.dart';
 import 'package:flutter_gallery/demo/rally/formatters.dart';
 
+import 'adaptive/adaptive_layout.dart';
+
 class FinancialEntityView extends StatelessWidget {
   const FinancialEntityView({
     this.heroLabel,
@@ -47,13 +49,18 @@ class FinancialEntityView extends StatelessWidget {
           wholeAmount: wholeAmount,
           segments: segments,
         ),
+        const SizedBox(height: 24),
         SizedBox(
           height: 1,
+          width: 700,
           child: Container(
             color: const Color(0xA026282F),
           ),
         ),
-        ListView(shrinkWrap: true, children: financialEntityCards),
+        Container(
+            width: 700,
+            child: ListView(shrinkWrap: true, children: financialEntityCards),
+        ),
       ],
     );
   }

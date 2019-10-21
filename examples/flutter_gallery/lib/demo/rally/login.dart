@@ -13,8 +13,7 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gallery/demo/rally/adaptive.dart';
-
+import 'adaptive/adaptive_layout.dart';
 import 'colors.dart';
 
 class LoginPage extends StatefulWidget {
@@ -48,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
           },
           child: Column(
             children: <Widget>[
-              Adaptive.onlyDesktop(
+              AdaptiveLayout.onlyDesktop(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
@@ -86,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                     shrinkWrap: true,
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     children: <Widget>[
-                      Adaptive.onlyMobile(
+                      AdaptiveLayout.onlyMobile(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 64),
                           child: SizedBox(
@@ -124,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      Adaptive(
+                      AdaptiveLayout(
                         mobile: SizedBox(
                           height: 120,
                           child: Image.asset(
@@ -177,7 +176,7 @@ class BorderButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OutlineButton(
-      borderSide: BorderSide(color: RallyColors.buttonColor),
+      borderSide: const BorderSide(color: RallyColors.buttonColor),
       color: RallyColors.buttonColor,
       highlightedBorderColor: RallyColors.buttonColor,
       onPressed: () {
