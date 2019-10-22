@@ -32,57 +32,59 @@ class OverviewView extends StatefulWidget {
 class _OverviewViewState extends State<OverviewView> {
   @override
   Widget build(BuildContext context) {
+    const double spacing = 12;
     final List<AccountData> accountDataList = DummyDataService.getAccountDataList();
     final List<BillData> billDataList = DummyDataService.getBillDataList();
     final List<BudgetData> budgetDataList = DummyDataService.getBudgetDataList();
-    final List<Widget> views = <Widget>[
-      if (Device.isMobile(context))
-        _AlertsView(),
-      _FinancialView(
-        title: 'Accounts',
-        total: sumAccountDataPrimaryAmount(accountDataList),
-        financialItemViews: buildAccountDataListViews(accountDataList),
-      ),
-      _FinancialView(
-        title: 'Bills',
-        total: sumBillDataPrimaryAmount(billDataList),
-        financialItemViews: buildBillDataListViews(billDataList),
-      ),
-      _FinancialView(
-        title: 'Budgets',
-        total: sumBudgetDataPrimaryAmount(budgetDataList),
-        financialItemViews: buildBudgetDataListViews(budgetDataList, context),
-      ),
-    ];
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Expanded(
-          flex: 7,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: AdaptiveLayout(
-              mobile: ListView(children: views),
-              desktop: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                children: views,
-              ),
+    return Padding(
+      padding: const EdgeInsets.only(top: spacing),
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          final bool isDesktop = constraints.biggest.shortestSide > desktopBreakpoint;
+          final double halfSizeWidth = constraints.maxWidth / 2 - spacing;
+
+          return SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Wrap(
+              runSpacing: spacing,
+              spacing: spacing,
+              children: <Widget>[
+                if (!isDesktop)
+                  Container(
+                    width: constraints.maxWidth,
+                    child: _AlertsView(),
+                  ),
+                Container(
+                  width: isDesktop ? halfSizeWidth : constraints.maxWidth,
+                  child: _FinancialView(
+                    title: 'Accounts',
+                    total: sumAccountDataPrimaryAmount(accountDataList),
+                    financialItemViews: buildAccountDataListViews(accountDataList),
+                  ),
+                ),
+                Container(
+                  width: isDesktop ? halfSizeWidth : constraints.maxWidth,
+                  child: _FinancialView(
+                    title: 'Bills',
+                    total: sumBillDataPrimaryAmount(billDataList),
+                    financialItemViews: buildBillDataListViews(billDataList),
+                  ),
+                ),
+                Container(
+                  width: constraints.maxWidth,
+                  child: _FinancialView(
+                    title: 'Budgets',
+                    total: sumBudgetDataPrimaryAmount(budgetDataList),
+                    financialItemViews: buildBudgetDataListViews(budgetDataList, context),
+                  ),
+                ),
+
+              ],
             ),
-          ),
-        ),
-        if (Device.isDesktop(context))
-          Expanded(
-            flex: 3,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 24),
-              child: _AlertsView(),
-            ),
-          ),
-      ],
+          );
+        },
+      ),
     );
   }
 }
