@@ -41,45 +41,66 @@ class _OverviewViewState extends State<OverviewView> {
       padding: const EdgeInsets.only(top: spacing),
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          final bool isDesktop = constraints.biggest.shortestSide > desktopBreakpoint;
-          final double halfSizeWidth = constraints.maxWidth / 2 - spacing;
+          final bool alertsOnRightSide = constraints.biggest.shortestSide > desktopBreakpoint;
+          final double alertsWidth = alertsOnRightSide ? 300 : 0;
 
           return SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Wrap(
-              runSpacing: spacing,
               spacing: spacing,
               children: <Widget>[
-                if (!isDesktop)
+                Container(
+                  width: constraints.maxWidth - alertsWidth,
+                  child: LayoutBuilder(
+                    builder: (BuildContext context, BoxConstraints constraints) {
+                      final double overviewWidth = constraints.maxWidth;
+                      final double halfMaxWidth = overviewWidth / 2 - spacing / 2;
+                      
+                      return Wrap(
+                        runSpacing: spacing,
+                        spacing: spacing,
+                        children: <Widget>[
+                          if (!alertsOnRightSide)
+                            Container(
+                              width: constraints.maxWidth,
+                              child: _AlertsView(),
+                            ),
+                          Container(
+                            width: alertsOnRightSide ? halfMaxWidth : constraints.maxWidth,
+                            child: _FinancialView(
+                              title: 'Accounts',
+                              total: sumAccountDataPrimaryAmount(accountDataList),
+                              financialItemViews: buildAccountDataListViews(accountDataList),
+                            ),
+                          ),
+                          Container(
+                            width: alertsOnRightSide ? halfMaxWidth : constraints.maxWidth,
+                            child: _FinancialView(
+                              title: 'Bills',
+                              total: sumBillDataPrimaryAmount(billDataList),
+                              financialItemViews: buildBillDataListViews(billDataList),
+                            ),
+                          ),
+                          Container(
+                            width: constraints.maxWidth,
+                            child: _FinancialView(
+                              title: 'Budgets',
+                              total: sumBudgetDataPrimaryAmount(budgetDataList),
+                              financialItemViews: buildBudgetDataListViews(budgetDataList, context),
+                            ),
+                          ),
+
+                        ],
+                      );
+                    }
+                  ),
+                ),
+                if (alertsOnRightSide)
                   Container(
-                    width: constraints.maxWidth,
+                    width: alertsWidth - spacing,
+                    height: constraints.maxHeight,
                     child: _AlertsView(),
                   ),
-                Container(
-                  width: isDesktop ? halfSizeWidth : constraints.maxWidth,
-                  child: _FinancialView(
-                    title: 'Accounts',
-                    total: sumAccountDataPrimaryAmount(accountDataList),
-                    financialItemViews: buildAccountDataListViews(accountDataList),
-                  ),
-                ),
-                Container(
-                  width: isDesktop ? halfSizeWidth : constraints.maxWidth,
-                  child: _FinancialView(
-                    title: 'Bills',
-                    total: sumBillDataPrimaryAmount(billDataList),
-                    financialItemViews: buildBillDataListViews(billDataList),
-                  ),
-                ),
-                Container(
-                  width: constraints.maxWidth,
-                  child: _FinancialView(
-                    title: 'Budgets',
-                    total: sumBudgetDataPrimaryAmount(budgetDataList),
-                    financialItemViews: buildBudgetDataListViews(budgetDataList, context),
-                  ),
-                ),
-
               ],
             ),
           );
