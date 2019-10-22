@@ -40,13 +40,14 @@ class AccountsView extends StatelessWidget {
       desktop: Row(
         children: <Widget>[
           Expanded(
+            flex: 7,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 24.0),
               child: view,
             ),
           ),
-          AspectRatio(
-            aspectRatio: 2 / 5,
+          Expanded(
+            flex: 3,
             child: Container(
               color: RallyColors.inputBackground,
             ),

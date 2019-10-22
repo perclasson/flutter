@@ -49,9 +49,9 @@ class _OverviewViewState extends State<OverviewView> {
         financialItemViews: buildBillDataListViews(billDataList),
       ),
       _FinancialView(
-      title: 'Budgets',
-      total: sumBudgetDataPrimaryAmount(budgetDataList),
-      financialItemViews: buildBudgetDataListViews(budgetDataList, context),
+        title: 'Budgets',
+        total: sumBudgetDataPrimaryAmount(budgetDataList),
+        financialItemViews: buildBudgetDataListViews(budgetDataList, context),
       ),
     ];
 
@@ -59,7 +59,8 @@ class _OverviewViewState extends State<OverviewView> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Flexible(
+        Expanded(
+          flex: 7,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: AdaptiveLayout(
@@ -74,8 +75,8 @@ class _OverviewViewState extends State<OverviewView> {
           ),
         ),
         if (Device.isDesktop(context))
-          AspectRatio(
-            aspectRatio: 1 / 3,
+          Expanded(
+            flex: 3,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 24),
               child: _AlertsView(),
