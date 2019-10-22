@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 enum DeviceSize { Desktop, Mobile }
 
+const int desktopBreakpoint = 900;
+
 class Device {
-  static DeviceSize getDeviceSize(MediaQueryData mediaQueryData) => mediaQueryData.size.shortestSide > 900 ? DeviceSize.Desktop : DeviceSize.Mobile;
+  static DeviceSize getDeviceSize(MediaQueryData mediaQueryData) => mediaQueryData.size.shortestSide > desktopBreakpoint ? DeviceSize.Desktop : DeviceSize.Mobile;
 
   static bool isDesktop(BuildContext context) => getDeviceSize(MediaQuery.of(context)) == DeviceSize.Desktop;
 

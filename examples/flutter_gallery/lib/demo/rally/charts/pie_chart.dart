@@ -144,30 +144,34 @@ class _AnimatedRallyPieChart extends AnimatedWidget {
         letterSpacing: 0.5,
     );
 
-    return DecoratedBox(
-      decoration: _RallyPieChartOutlineDecoration(
-        maxFraction: animation.value,
-        total: total,
-        segments: segments,
-      ),
-      child: SizedBox(
-        height: Device.isDesktop(context) ? 500 : 300,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                centerLabel,
-                style: labelTextStyle,
-              ),
-              Text(
-                usdWithSignFormat.format(centerAmount),
-                style: Device.isDesktop(context) ? textTheme.headline.copyWith(fontSize: 70) : textTheme.headline,
-              ),
-            ],
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return DecoratedBox(
+          decoration: _RallyPieChartOutlineDecoration(
+            maxFraction: animation.value,
+            total: total,
+            segments: segments,
           ),
-        ),
-      ),
+          child: SizedBox(
+            height: constraints.maxHeight,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    centerLabel,
+                    style: labelTextStyle,
+                  ),
+                  Text(
+                    usdWithSignFormat.format(centerAmount),
+                    style: constraints.maxHeight >= 500 ? textTheme.headline.copyWith(fontSize: 70) : textTheme.headline,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
     );
   }
 }

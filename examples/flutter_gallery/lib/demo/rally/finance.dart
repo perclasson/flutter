@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gallery/demo/rally/charts/pie_chart.dart';
@@ -41,27 +43,34 @@ class FinancialEntityView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        RallyPieChart(
-          heroLabel: heroLabel,
-          heroAmount: heroAmount,
-          wholeAmount: wholeAmount,
-          segments: segments,
-        ),
-        const SizedBox(height: 24),
-        SizedBox(
-          height: 1,
-          width: 700,
-          child: Container(
-            color: const Color(0xA026282F),
-          ),
-        ),
-        Container(
-            width: 700,
-            child: ListView(shrinkWrap: true, children: financialEntityCards),
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Column(
+          children: <Widget>[
+            ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: min(constraints.biggest.shortestSide * 0.9, 500)),
+              child: RallyPieChart(
+                heroLabel: heroLabel,
+                heroAmount: heroAmount,
+                wholeAmount: wholeAmount,
+                segments: segments,
+              ),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              height: 1,
+              width: 700,
+              child: Container(
+                color: const Color(0xA026282F),
+              ),
+            ),
+            Container(
+                width: 700,
+                child: ListView(shrinkWrap: true, children: financialEntityCards),
+            ),
+          ],
+        );
+      }
     );
   }
 }
