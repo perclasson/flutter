@@ -15,7 +15,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gallery/demo/rally/adaptive/adaptive_grid.dart';
 import 'package:flutter_gallery/demo/rally/adaptive/adaptive_layout.dart';
 
 import 'package:flutter_gallery/demo/rally/colors.dart';
@@ -32,41 +31,38 @@ class OverviewView extends StatefulWidget {
 class _OverviewViewState extends State<OverviewView> {
   @override
   Widget build(BuildContext context) {
-    const double spacing = 12;
     final List<AccountData> accountDataList = DummyDataService.getAccountDataList();
     final List<BillData> billDataList = DummyDataService.getBillDataList();
     final List<BudgetData> budgetDataList = DummyDataService.getBudgetDataList();
 
-    return Padding(
-      padding: const EdgeInsets.only(top: spacing),
-      child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          final bool alertsOnRightSide = constraints.biggest.shortestSide > desktopBreakpoint;
-          final double alertsWidth = alertsOnRightSide ? 300 : 0;
-
-          return SingleChildScrollView(
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final bool isAlertOnTheRightSide = constraints.biggest.shortestSide > desktopBreakpoint;
+        final double spacing = isAlertOnTheRightSide ? 24 : 12;
+        final double rightSideAlertWidth = isAlertOnTheRightSide ? 300 : 0;
+        return Padding(
+          padding: EdgeInsets.only(top: spacing),
+          child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Wrap(
               spacing: spacing,
               children: <Widget>[
                 Container(
-                  width: constraints.maxWidth - alertsWidth,
+                  width: constraints.maxWidth - rightSideAlertWidth,
                   child: LayoutBuilder(
                     builder: (BuildContext context, BoxConstraints constraints) {
-                      final double overviewWidth = constraints.maxWidth;
-                      final double halfMaxWidth = overviewWidth / 2 - spacing / 2;
-                      
+                      final double halfMaxWidth = constraints.maxWidth / 2 - spacing / 2;
                       return Wrap(
                         runSpacing: spacing,
                         spacing: spacing,
                         children: <Widget>[
-                          if (!alertsOnRightSide)
+                          if (!isAlertOnTheRightSide)
                             Container(
                               width: constraints.maxWidth,
                               child: _AlertsView(),
                             ),
                           Container(
-                            width: alertsOnRightSide ? halfMaxWidth : constraints.maxWidth,
+                            width: isAlertOnTheRightSide ? halfMaxWidth : constraints.maxWidth,
                             child: _FinancialView(
                               title: 'Accounts',
                               total: sumAccountDataPrimaryAmount(accountDataList),
@@ -74,7 +70,7 @@ class _OverviewViewState extends State<OverviewView> {
                             ),
                           ),
                           Container(
-                            width: alertsOnRightSide ? halfMaxWidth : constraints.maxWidth,
+                            width: isAlertOnTheRightSide ? halfMaxWidth : constraints.maxWidth,
                             child: _FinancialView(
                               title: 'Bills',
                               total: sumBillDataPrimaryAmount(billDataList),
@@ -95,17 +91,16 @@ class _OverviewViewState extends State<OverviewView> {
                     }
                   ),
                 ),
-                if (alertsOnRightSide)
+                if (isAlertOnTheRightSide)
                   Container(
-                    width: alertsWidth - spacing,
-                    height: constraints.maxHeight,
+                    width: rightSideAlertWidth - spacing,
                     child: _AlertsView(),
                   ),
               ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -113,6 +108,7 @@ class _OverviewViewState extends State<OverviewView> {
 class _AlertsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // use layoutbuilder and contraints to set the padding
     return Container(
       padding: const EdgeInsets.only(left: 16, top: 4, bottom: 4),
       color: RallyColors.cardBackground,
